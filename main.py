@@ -1,15 +1,15 @@
 # Developer: Hector Alcala
-# Purpose: Calculate the mean of a list of decimals
-# Project: 1
+# Purpose: Calculate the standard deviation of a list of decimals
+# Project: 2
 
 
 
 class Configuration:
 
-    INTEGER_LOWER = 6
+    INTEGER_LOWER = 4
     INTEGER_UPPER = 15
 
-    DECIMAL_LOWER = 10.0
+    DECIMAL_LOWER = 5.0
     DECIMAL_UPPER = 100.0
 
 
@@ -114,10 +114,32 @@ class Math:
         return mean
 
 
+    @staticmethod
+    def standard_deviation(numbers: list[float]) -> float:
+        """
+        Calculate and return the standard deviation of a list of decimals
+        Arguments:
+            numbers: list[float] = The list of decimals
+        Returns:
+            float = The standard deviation of the list of decimals
+        """
+
+        length = len(numbers)
+        mean = Math.mean(numbers)
+        summation = 0
+
+        for number in numbers:
+            summation += (number - mean) ** (2)
+
+        standard_deviation = ((summation) / (length - 1)) ** (0.5)
+
+        return standard_deviation
+
+
 
 if __name__ == "__main__":
 
-    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter between {Configuration.INTEGER_LOWER} and {Configuration.INTEGER_UPPER} numbers.\n- Each number must be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the mean.\n")
+    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter between {Configuration.INTEGER_LOWER} and {Configuration.INTEGER_UPPER} numbers.\n- Each number must be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the standard deviation.\n")
 
     quantity = Input.integer("Quantity of numbers: ", Configuration.INTEGER_LOWER, Configuration.INTEGER_UPPER)
 
@@ -127,6 +149,6 @@ if __name__ == "__main__":
         number = Input.decimal(f"Number {index}: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
         numbers.append(number)
 
-    mean = Math.mean(numbers)
+    standard_deviation = Math.standard_deviation(numbers)
 
-    print(f"\n{mean=}\n")
+    print(f"\n{standard_deviation=}\n")
