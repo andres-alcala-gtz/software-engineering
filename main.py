@@ -1,6 +1,6 @@
 # Developer: Hector Alcala
-# Purpose: Calculate the standard deviation of a list of decimals
-# Project: 2
+# Purpose: Calculate the standard scores of a list of decimals
+# Project: 3
 
 
 
@@ -10,7 +10,7 @@ class Configuration:
     INTEGER_UPPER = 15
 
     DECIMAL_LOWER = 5.0
-    DECIMAL_UPPER = 100.0
+    DECIMAL_UPPER = 300.0
 
 
 
@@ -136,10 +136,32 @@ class Math:
         return standard_deviation
 
 
+    @staticmethod
+    def standard_scores(numbers: list[float]) -> list[float]:
+        """
+        Calculate and return the standard scores of a list of decimals
+        Arguments:
+            numbers: list[float] = The list of decimals
+        Returns:
+            list[float] = The standard scores of the list of decimals
+        """
+
+        mean = Math.mean(numbers)
+        standard_deviation = Math.standard_deviation(numbers)
+
+        standard_scores = []
+
+        for number in numbers:
+            standard_score = (number - mean) / (standard_deviation)
+            standard_scores.append(standard_score)
+
+        return standard_scores
+
+
 
 if __name__ == "__main__":
 
-    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter between {Configuration.INTEGER_LOWER} and {Configuration.INTEGER_UPPER} numbers.\n- Each number must be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the standard deviation.\n")
+    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter between {Configuration.INTEGER_LOWER} and {Configuration.INTEGER_UPPER} numbers.\n- Each number must be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the standard scores.\n")
 
     quantity = Input.integer("Quantity of numbers: ", Configuration.INTEGER_LOWER, Configuration.INTEGER_UPPER)
 
@@ -149,6 +171,6 @@ if __name__ == "__main__":
         number = Input.decimal(f"Number {index}: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
         numbers.append(number)
 
-    standard_deviation = Math.standard_deviation(numbers)
+    standard_scores = Math.standard_scores(numbers)
 
-    print(f"\n{standard_deviation=}\n")
+    print(f"\n{standard_scores=}\n")
