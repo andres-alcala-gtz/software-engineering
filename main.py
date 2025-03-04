@@ -1,16 +1,16 @@
 # Developer: Hector Alcala
-# Purpose: Calculate the standard scores of a list of decimals
-# Project: 3
+# Purpose: Calculate the sample size of a list of decimals
+# Project: 4
 
 
 
 class Configuration:
 
-    INTEGER_LOWER = 4
-    INTEGER_UPPER = 15
+    INTEGER_LOWER = 11
+    INTEGER_UPPER = 20
 
-    DECIMAL_LOWER = 5.0
-    DECIMAL_UPPER = 300.0
+    DECIMAL_LOWER = 3_000.0
+    DECIMAL_UPPER = 15_000.0
 
 
 
@@ -158,10 +158,31 @@ class Math:
         return standard_scores
 
 
+    @staticmethod
+    def sample_size(numbers: list[float], acceptable_error: float, standard_score: float) -> int:
+        """
+        Calculate and return the sample size of a list of decimals
+        Arguments:
+            numbers: list[float] = The list of decimals
+            acceptable_error: float = The acceptable error
+            standard_score: float = The standard score
+        Returns:
+            int = The sample size of the list of decimals
+        """
+
+        standard_deviation = Math.standard_deviation(numbers)
+
+        sample_size = int(((standard_score * standard_deviation) / (acceptable_error)) ** (2))
+
+        return sample_size
+
+
 
 if __name__ == "__main__":
 
-    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter between {Configuration.INTEGER_LOWER} and {Configuration.INTEGER_UPPER} numbers.\n- Each number must be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the standard scores.\n")
+    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter the acceptable error.\n- You must enter between {Configuration.INTEGER_LOWER} and {Configuration.INTEGER_UPPER} numbers.\n- Each number must be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the sample size.\n")
+
+    error = Input.decimal("Acceptable error: ", None, None)
 
     quantity = Input.integer("Quantity of numbers: ", Configuration.INTEGER_LOWER, Configuration.INTEGER_UPPER)
 
@@ -171,6 +192,7 @@ if __name__ == "__main__":
         number = Input.decimal(f"Number {index}: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
         numbers.append(number)
 
-    standard_scores = Math.standard_scores(numbers)
+    sample_size_95 = Math.sample_size(numbers, error, 1.96)
+    sample_size_99 = Math.sample_size(numbers, error, 2.58)
 
-    print(f"\n{standard_scores=}\n")
+    print(f"\n{sample_size_95=}, {sample_size_99=}\n")
