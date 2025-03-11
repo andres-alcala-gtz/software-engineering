@@ -1,16 +1,24 @@
 # Developer: Hector Alcala
-# Purpose: Calculate the sample size of a list of decimals
-# Project: 4
+# Purpose: Calculate the normal distributions of a list of decimals
+# Project: 5
+
+
+
+import random
+import pandas
 
 
 
 class Configuration:
 
-    INTEGER_LOWER = 11
-    INTEGER_UPPER = 20
+    E = 2.718281828
+    PI = 3.141592654
 
-    DECIMAL_LOWER = 3_000.0
-    DECIMAL_UPPER = 15_000.0
+    INTEGER_LOWER = 50
+    INTEGER_UPPER = None
+
+    DECIMAL_LOWER = 41.0
+    DECIMAL_UPPER = 300.0
 
 
 
@@ -177,22 +185,40 @@ class Math:
         return sample_size
 
 
+    @staticmethod
+    def normal_distributions(numbers: list[float]) -> list[float]:
+        """
+        Calculate and return the normal distributions of a list of decimals
+        Arguments:
+            numbers: list[float] = The list of decimals
+        Returns:
+            list[float] = The normal distributions of the list of decimals
+        """
+
+        mean = Math.mean(numbers)
+        standard_deviation = Math.standard_deviation(numbers)
+
+        normal_distributions = []
+
+        for number in numbers:
+            normal_distribution = ((1) / ((2.0 * Configuration.PI * standard_deviation) ** (0.5))) * ((Configuration.E) ** -(((number - mean) ** (2)) / ((2.0) * (standard_deviation ** 2))))
+            normal_distributions.append(normal_distribution)
+
+        return normal_distributions
+
+
 
 if __name__ == "__main__":
 
-    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter the acceptable error.\n- You must enter between {Configuration.INTEGER_LOWER} and {Configuration.INTEGER_UPPER} numbers.\n- Each number must be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the sample size.\n")
-
-    error = Input.decimal("Acceptable error: ", None, None)
+    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter the quantity of numbers, must be at least {Configuration.INTEGER_LOWER}.\n- Each number will be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the normal distributions.\n")
 
     quantity = Input.integer("Quantity of numbers: ", Configuration.INTEGER_LOWER, Configuration.INTEGER_UPPER)
 
-    numbers = []
+    numbers = random.sample(range(int(Configuration.DECIMAL_LOWER), int(Configuration.DECIMAL_UPPER) + 1), quantity)
 
-    for index in range(1, quantity + 1):
-        number = Input.decimal(f"Number {index}: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
-        numbers.append(number)
+    normal_distributions = Math.normal_distributions(numbers)
 
-    sample_size_95 = Math.sample_size(numbers, error, 1.96)
-    sample_size_99 = Math.sample_size(numbers, error, 2.58)
+    print(f"\n{normal_distributions=}\n")
 
-    print(f"\n{sample_size_95=}, {sample_size_99=}\n")
+    data = pandas.DataFrame({"x": numbers, "y": normal_distributions})
+    data.to_excel("normal_distributions.xlsx", index=False)
