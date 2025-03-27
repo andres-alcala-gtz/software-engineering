@@ -1,11 +1,6 @@
 # Developer: Hector Alcala
-# Purpose: Calculate the normal distributions of a list of decimals
-# Project: 5
-
-
-
-import random
-import pandas
+# Purpose: Calculate the standard error of the estimate of a list of coordinates
+# Project: 6
 
 
 
@@ -14,11 +9,11 @@ class Configuration:
     E = 2.718281828
     PI = 3.141592654
 
-    INTEGER_LOWER = 50
+    INTEGER_LOWER = 2
     INTEGER_UPPER = None
 
-    DECIMAL_LOWER = 41.0
-    DECIMAL_UPPER = 300.0
+    DECIMAL_LOWER = None
+    DECIMAL_UPPER = None
 
 
 
@@ -207,18 +202,48 @@ class Math:
         return normal_distributions
 
 
+    @staticmethod
+    def standard_error_estimate(y_true: list[float], y_pred: list[float]) -> float:
+        """
+        Calculate and return the standard error of the estimate of a list of coordinates
+        Arguments:
+            y_true: list[float] = The list of true y-coordinate values
+            y_pred: list[float] = The list of predicted y-coordinate values
+        Returns:
+            float = The standard error of the estimate of the list of coordinates
+        """
+
+        length = len(y_true)
+        summation_sse = 0
+
+        for yt, yp in zip(y_true, y_pred):
+            summation_sse += (yt - yp) ** (2)
+
+        standard_error_estimate = ((summation_sse) / (length - 2)) ** (0.5)
+
+        return standard_error_estimate
+
+
 
 if __name__ == "__main__":
 
-    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter the quantity of numbers, must be at least {Configuration.INTEGER_LOWER}.\n- Each number will be between {Configuration.DECIMAL_LOWER} and {Configuration.DECIMAL_UPPER}.\nOnce all numbers have been collected, the program will calculate the normal distributions.\n")
+    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter the slope and the intercept.\n- You must enter the quantity of coordinates, must be at least {Configuration.INTEGER_LOWER}.\n- You must enter each coordinate.\nOnce all numbers have been collected, the program will calculate the standard error of the estimate.\n")
 
-    quantity = Input.integer("Quantity of numbers: ", Configuration.INTEGER_LOWER, Configuration.INTEGER_UPPER)
+    slope = Input.decimal("Slope: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
+    intercept = Input.decimal("Intercept: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
 
-    numbers = random.sample(range(int(Configuration.DECIMAL_LOWER), int(Configuration.DECIMAL_UPPER) + 1), quantity)
+    quantity = Input.integer("Quantity of coordinates: ", Configuration.INTEGER_LOWER, Configuration.INTEGER_UPPER)
 
-    normal_distributions = Math.normal_distributions(numbers)
+    y_true = []
+    y_pred = []
 
-    print(f"\n{normal_distributions=}\n")
+    for index in range(1, quantity + 1):
+        xt = Input.decimal(f"x{index}: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
+        yt = Input.decimal(f"y{index}: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
+        yp = (slope * xt) + (intercept)
+        y_true.append(yt)
+        y_pred.append(yp)
 
-    data = pandas.DataFrame({"x": numbers, "y": normal_distributions})
-    data.to_excel("normal_distributions.xlsx", index=False)
+    standard_error_estimate = Math.standard_error_estimate(y_true, y_pred)
+
+    print(f"\n{standard_error_estimate=}\n")
