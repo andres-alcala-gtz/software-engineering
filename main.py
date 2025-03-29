@@ -1,6 +1,6 @@
 # Developer: Hector Alcala
-# Purpose: Calculate the standard error of the estimate of a list of coordinates
-# Project: 6
+# Purpose: Calculate the coefficient of determination of a list of coordinates
+# Project: 7
 
 
 
@@ -224,10 +224,34 @@ class Math:
         return standard_error_estimate
 
 
+    @staticmethod
+    def coefficient_determination(y_true: list[float], y_pred: list[float]) -> float:
+        """
+        Calculate and return the coefficient of determination of a list of coordinates
+        Arguments:
+            y_true: list[float] = The list of true y-coordinate values
+            y_pred: list[float] = The list of predicted y-coordinate values
+        Returns:
+            float = The coefficient of determination of the list of coordinates
+        """
+
+        mean = Math.mean(y_true)
+        summation_sse = 0
+        summation_sst = 0
+
+        for yt, yp in zip(y_true, y_pred):
+            summation_sse += (yt - yp) ** (2)
+            summation_sst += (yt - mean) ** (2)
+
+        coefficient_determination = (summation_sst - summation_sse) / (summation_sst)
+
+        return coefficient_determination
+
+
 
 if __name__ == "__main__":
 
-    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter the slope and the intercept.\n- You must enter the quantity of coordinates, must be at least {Configuration.INTEGER_LOWER}.\n- You must enter each coordinate.\nOnce all numbers have been collected, the program will calculate the standard error of the estimate.\n")
+    print(f"\nThis program collects a set of numbers with the following conditions:\n- You must enter the slope and the intercept.\n- You must enter the quantity of coordinates, must be at least {Configuration.INTEGER_LOWER}.\n- You must enter each coordinate.\nOnce all numbers have been collected, the program will calculate the coefficient of determination.\n")
 
     slope = Input.decimal("Slope: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
     intercept = Input.decimal("Intercept: ", Configuration.DECIMAL_LOWER, Configuration.DECIMAL_UPPER)
@@ -244,6 +268,6 @@ if __name__ == "__main__":
         y_true.append(yt)
         y_pred.append(yp)
 
-    standard_error_estimate = Math.standard_error_estimate(y_true, y_pred)
+    coefficient_determination = Math.coefficient_determination(y_true, y_pred)
 
-    print(f"\n{standard_error_estimate=}\n")
+    print(f"\n{coefficient_determination=}\n")
